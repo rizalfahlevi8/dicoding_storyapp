@@ -59,6 +59,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email.';
                     }
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email.';
+                    }
                     return null;
                   },
                   decoration: const InputDecoration(hintText: "Email"),
@@ -72,6 +76,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password.';
                     }
+                    if (value.length < 8) {
+                      return 'Password must be at least 8 characters.';
+                    }
                     return null;
                   },
                 ),
@@ -81,9 +88,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     : ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          final scaffoldMessenger = ScaffoldMessenger.of(
+                            context,
+                          );
                           final authRead = context.read<AuthProvider>();
-                          final result = await authRead.register(nameController.text, emailController.text, passwordController.text);
-                          if (result) widget.onRegister();
+                          final result = await authRead.register(
+                            nameController.text,
+                            emailController.text,
+                            passwordController.text,
+                          );
+                          if (result == true) {
+                            widget.onRegister();
+                          } else if (result is String) {
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(content: Text(result.toString())),
+                            );
+                          }
+                          ;
                         }
                       },
                       child: const Text("REGISTER"),

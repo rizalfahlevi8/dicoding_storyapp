@@ -11,22 +11,49 @@ class AuthProvider extends ChangeNotifier {
   bool isLoadingRegister = false;
   bool isLoggedIn = false;
 
-  Future<bool> login(String email, String password) async {
+  Future<dynamic> login(String email, String password) async {
     isLoadingLogin = true;
     notifyListeners();
-    await apiAuth.login(email, password);
-    isLoggedIn = await apiAuth.isLoggedIn();
-    isLoadingLogin = false;
-    notifyListeners();
-    return isLoggedIn;
+    try {
+      final result = await apiAuth.login(email, password);
+      isLoadingLogin = false;
+      notifyListeners();
+      print("Login result: $result");
+      return result;
+    } catch (e) {
+      isLoadingLogin = false;
+      notifyListeners();
+      return "Something went wrong.";
+    }
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<dynamic> register(String name, String email, String password) async {
     isLoadingRegister = true;
     notifyListeners();
-    final userState = await apiAuth.register(name, email, password);
-    isLoadingRegister = false;
+    try {
+      final result = await apiAuth.register(name, email, password);
+      isLoadingRegister = false;
+      notifyListeners();
+      return result;
+    } catch (e) {
+      isLoadingRegister = false;
+      notifyListeners();
+      return "Something went wrong.";
+    }
+  }
+
+  Future<bool> logout() async {
+    isLoadingLogout = true;
     notifyListeners();
-    return userState;
+    try {
+      final logout = await apiAuth.logout();
+      isLoadingLogout = false;
+      notifyListeners();
+      return logout;
+    } catch (e) {
+      isLoadingLogout = false;
+      notifyListeners();
+      return false;
+    }
   }
 }

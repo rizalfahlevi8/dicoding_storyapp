@@ -13,33 +13,36 @@ class ApiAuth {
     return preferences.getBool(stateKey) ?? false;
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<dynamic> register(String name, String email, String password) async {
     final response = await http.post(
       Uri.parse("$_baseUrl/register"),
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode({"name": name, "email": email, "password": password}),
     );
-
+    
+    final data = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
-      throw Exception("Failed to create register");
+      return data["message"];
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<dynamic> login(String email, String password) async {
     final preferences = await SharedPreferences.getInstance();
     final response = await http.post(
       Uri.parse("$_baseUrl/login"),
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode({"email": email, "password": password}),
     );
-
+    
+    final data = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      await preferences.setString(tokenKey, data["token"]);
-
-      return preferences.setBool(stateKey, true);
+      await preferences.setString(tokenKey, data["loginResult"]["token"]);
+      await preferences.setBool(stateKey, true);
+      return true;
     } else {
-      throw Exception("Failed login");
+      return data["message"];
     }
   }
 

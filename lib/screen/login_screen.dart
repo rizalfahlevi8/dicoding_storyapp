@@ -5,6 +5,7 @@ import 'package:story_app/provider/auth_provider.dart';
 class LoginScreen extends StatefulWidget {
   final Function() onLogin;
   final Function() onRegister;
+  
   const LoginScreen({
     super.key,
     required this.onLogin,
@@ -47,6 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email.';
                     }
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email.';
+                    }
                     return null;
                   },
                   decoration: const InputDecoration(hintText: "Email"),
@@ -73,16 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                           );
                           final authRead = context.read<AuthProvider>();
-                          final result = await authRead.login(emailController.text, passwordController.text);
-                          if (result) {
+                          final result = await authRead.login(
+                            emailController.text,
+                            passwordController.text,
+                          );
+                          if (result == true) {
                             widget.onLogin();
-                          } else {
+                          } else if (result is String) {
                             scaffoldMessenger.showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Your email or password is invalid",
-                                ),
-                              ),
+                              SnackBar(content: Text(result.toString())),
                             );
                           }
                         }

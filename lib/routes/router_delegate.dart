@@ -4,6 +4,7 @@ import 'package:story_app/data/model/page_configuration.dart';
 import 'package:story_app/screen/login_screen.dart';
 import 'package:story_app/screen/register_screen.dart';
 import 'package:story_app/screen/splash_screen.dart';
+import 'package:story_app/screen/story_list_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate<PageConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -20,7 +21,9 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
 
   _init() async {
     isLoggedIn = await authApi.isLoggedIn();
-    notifyListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 
   @override
@@ -33,8 +36,8 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   Widget build(BuildContext context) {
     if (isLoggedIn == null) {
       historyStack = _splashStack;
-      // } else if (isLoggedIn == true) {
-      //   historyStack = _loggedInStack;
+    } else if (isLoggedIn == true) {
+      historyStack = _loggedInStack;
     } else {
       historyStack = _loggedOutStack;
     }
@@ -44,15 +47,21 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       onDidRemovePage: (page) {
         if (page.key == ValueKey(selectedHistory)) {
           selectedHistory = null;
-          notifyListeners();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            notifyListeners();
+          });
         }
         if (page.key == const ValueKey("FormScreen")) {
           isForm = false;
-          notifyListeners();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            notifyListeners();
+          });
         }
         if (page.key == const ValueKey("RegisterPage")) {
           isRegister = false;
-          notifyListeners();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            notifyListeners();
+          });
         }
       },
     );
@@ -90,6 +99,18 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
           },
         ),
       ),
+  ];
+
+  List<Page> get _loggedInStack => [
+    MaterialPage(
+      key: const ValueKey("QuotesListPage"),
+      child: StoryListScreen(
+        onLogout: () {
+          isLoggedIn = false;
+          notifyListeners();
+        },
+      ),
+    ),
   ];
 
   @override
