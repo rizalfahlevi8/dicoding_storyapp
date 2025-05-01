@@ -18,7 +18,6 @@ class AuthProvider extends ChangeNotifier {
       final result = await apiAuth.login(email, password);
       isLoadingLogin = false;
       notifyListeners();
-      print("Login result: $result");
       return result;
     } catch (e) {
       isLoadingLogin = false;

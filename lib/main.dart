@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/data/api/api_auth.dart';
-import 'package:story_app/provider/auth_provider.dart';
+import 'package:story_app/data/api/api_story.dart';
+import 'package:story_app/provider/auth/auth_provider.dart';
+import 'package:story_app/provider/home/story_list_provider.dart';
 import 'package:story_app/routes/router_delegate.dart';
 
 void main() {
@@ -10,7 +12,14 @@ void main() {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => authProvider)],
+      providers: [
+        Provider(create: (context) => ApiAuth()),
+        Provider(create: (context) => ApiStory()),
+        ChangeNotifierProvider(
+          create: (context) => StoryListProvider(context.read<ApiStory>()),
+        ),
+        ChangeNotifierProvider(create: (context) => authProvider),
+      ],
       child: MainApp(authRepository: authRepository),
     ),
   );

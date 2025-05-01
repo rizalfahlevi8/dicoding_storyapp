@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/data/api/api_auth.dart';
 import 'package:story_app/data/model/page_configuration.dart';
-import 'package:story_app/screen/login_screen.dart';
-import 'package:story_app/screen/register_screen.dart';
+import 'package:story_app/screen/auth/login_screen.dart';
+import 'package:story_app/screen/auth/register_screen.dart';
 import 'package:story_app/screen/splash_screen.dart';
-import 'package:story_app/screen/story_list_screen.dart';
+import 'package:story_app/screen/home/story_list_screen.dart';
 
 class MyRouterDelegate extends RouterDelegate<PageConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -29,7 +29,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _navigatorKey;
 
-  String? selectedHistory;
+  String? selectedStory;
   bool isForm = false;
 
   @override
@@ -45,8 +45,8 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       key: navigatorKey,
       pages: historyStack,
       onDidRemovePage: (page) {
-        if (page.key == ValueKey(selectedHistory)) {
-          selectedHistory = null;
+        if (page.key == ValueKey(selectedStory)) {
+          selectedStory = null;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             notifyListeners();
           });
@@ -105,6 +105,10 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
     MaterialPage(
       key: const ValueKey("QuotesListPage"),
       child: StoryListScreen(
+        onTapped: (String storyId) {
+          selectedStory = storyId;
+          notifyListeners();
+        },
         onLogout: () {
           isLoggedIn = false;
           notifyListeners();

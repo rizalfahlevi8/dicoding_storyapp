@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/provider/auth_provider.dart';
+import 'package:story_app/provider/auth/auth_provider.dart';
 
-class RegisterScreen extends StatefulWidget {
-  final Function() onRegister;
+class LoginScreen extends StatefulWidget {
   final Function() onLogin;
-
-  const RegisterScreen({
+  final Function() onRegister;
+  
+  const LoginScreen({
     super.key,
-    required this.onRegister,
     required this.onLogin,
+    required this.onRegister,
   });
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final nameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -33,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register Screen")),
+      appBar: AppBar(title: const Text("Login Screen")),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 300),
@@ -43,16 +42,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField(
-                  controller: nameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name.';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Name"),
-                ),
                 TextFormField(
                   controller: emailController,
                   validator: (value) {
@@ -76,14 +65,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password.';
                     }
-                    if (value.length < 8) {
-                      return 'Password must be at least 8 characters.';
-                    }
                     return null;
                   },
                 ),
                 const SizedBox(height: 8),
-                context.watch<AuthProvider>().isLoadingRegister
+                context.watch<AuthProvider>().isLoadingLogin
                     ? const Center(child: CircularProgressIndicator())
                     : ElevatedButton(
                       onPressed: () async {
@@ -92,27 +78,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             context,
                           );
                           final authRead = context.read<AuthProvider>();
-                          final result = await authRead.register(
-                            nameController.text,
+                          final result = await authRead.login(
                             emailController.text,
                             passwordController.text,
                           );
                           if (result == true) {
-                            widget.onRegister();
+                            widget.onLogin();
                           } else if (result is String) {
                             scaffoldMessenger.showSnackBar(
                               SnackBar(content: Text(result.toString())),
                             );
                           }
-                          ;
                         }
                       },
-                      child: const Text("REGISTER"),
+                      child: const Text("LOGIN"),
                     ),
                 const SizedBox(height: 8),
                 OutlinedButton(
-                  onPressed: () => widget.onLogin(),
-                  child: const Text("LOGIN"),
+                  onPressed: () => widget.onRegister(),
+                  child: const Text("REGISTER"),
                 ),
               ],
             ),
