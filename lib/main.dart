@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:story_app/data/api/api_auth.dart';
 import 'package:story_app/data/api/api_story.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
+import 'package:story_app/provider/detail/story_detail_provider.dart';
+import 'package:story_app/provider/form/form_provider.dart';
+import 'package:story_app/provider/form/upload_provider.dart';
 import 'package:story_app/provider/home/story_list_provider.dart';
 import 'package:story_app/routes/router_delegate.dart';
 
@@ -16,7 +19,18 @@ void main() {
         Provider(create: (context) => ApiAuth()),
         Provider(create: (context) => ApiStory()),
         ChangeNotifierProvider(
+          create: (context) => FormProvider(),
+        ),
+         ChangeNotifierProvider(
+          create: (context) => UploadProvider(
+            ApiStory(),
+          ),
+        ),
+        ChangeNotifierProvider(
           create: (context) => StoryListProvider(context.read<ApiStory>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => StoryDetailProvider(context.read<ApiStory>()),
         ),
         ChangeNotifierProvider(create: (context) => authProvider),
       ],
@@ -45,9 +59,10 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'History App',
+      title: 'Story App',
       routerDelegate: myRouterDelegate,
       backButtonDispatcher: RootBackButtonDispatcher(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

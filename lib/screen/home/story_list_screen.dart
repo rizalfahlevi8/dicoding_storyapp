@@ -6,12 +6,14 @@ import 'package:story_app/screen/home/story_card_widget.dart';
 import 'package:story_app/static/story_list_result_state.dart';
 
 class StoryListScreen extends StatefulWidget {
-  final Function() onLogout;
   final Function(String) onTapped;
+  final Function() toFormScreen;
+  final Function() onLogout;
 
   const StoryListScreen({
     super.key,
     required this.onTapped,
+    required this.toFormScreen,
     required this.onLogout,
   });
 
@@ -32,7 +34,15 @@ class _StoryListScreenState extends State<StoryListScreen> {
   Widget build(BuildContext context) {
     final authWatch = context.watch<AuthProvider>();
     return Scaffold(
-      appBar: AppBar(title: const Text("Story App")),
+      appBar: AppBar(
+        title: const Text("Story App"),
+        actions: [
+          IconButton(
+            onPressed: () => widget.toFormScreen(),
+            icon: const Icon(Icons.add),
+          ),
+        ],
+        ),
       body: Column(
         children: [
           Expanded(

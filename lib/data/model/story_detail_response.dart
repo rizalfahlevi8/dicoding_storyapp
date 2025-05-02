@@ -15,7 +15,7 @@ class StoryDetailResponse {
     return StoryDetailResponse(
       error: json['error'],
       message: json['message'],
-      story: Story.fromJson(json['Story']),
+      story: Story.fromJson(json['story']),
     );
   }
 }

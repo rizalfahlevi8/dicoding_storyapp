@@ -3,6 +3,8 @@ import 'package:story_app/data/api/api_auth.dart';
 import 'package:story_app/data/model/page_configuration.dart';
 import 'package:story_app/screen/auth/login_screen.dart';
 import 'package:story_app/screen/auth/register_screen.dart';
+import 'package:story_app/screen/detail/detail_screen.dart';
+import 'package:story_app/screen/form/form_screen.dart';
 import 'package:story_app/screen/splash_screen.dart';
 import 'package:story_app/screen/home/story_list_screen.dart';
 
@@ -109,12 +111,26 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
           selectedStory = storyId;
           notifyListeners();
         },
+        toFormScreen: () {
+          isForm = true;
+          notifyListeners();
+        },
         onLogout: () {
           isLoggedIn = false;
           notifyListeners();
         },
       ),
     ),
+    if (selectedStory != null)
+      MaterialPage(
+        key: ValueKey(selectedStory),
+        child: DetailScreen(storyId: selectedStory!),
+      ),
+      if (isForm)
+      MaterialPage(
+        key: ValueKey("FormScreen"),
+        child: FormScreen(),
+      ),
   ];
 
   @override
