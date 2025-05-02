@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
 import 'package:story_app/provider/home/story_list_provider.dart';
+import 'package:story_app/routes/page_manager.dart';
 import 'package:story_app/screen/home/story_card_widget.dart';
 import 'package:story_app/static/story_list_result_state.dart';
 
@@ -38,11 +39,21 @@ class _StoryListScreenState extends State<StoryListScreen> {
         title: const Text("Story App"),
         actions: [
           IconButton(
-            onPressed: () => widget.toFormScreen(),
+            onPressed: () async {
+              final scaffoldMessengerState = ScaffoldMessenger.of(context);
+              widget.toFormScreen();
+              final dataString =
+                  await context.read<PageManager<String>>().waitForResult();
+              scaffoldMessengerState.showSnackBar(
+                SnackBar(content: Text("$dataString"), backgroundColor: Colors.green,),
+              );
+
+              context.read<StoryListProvider>().fetchStoryList();
+            },
             icon: const Icon(Icons.add),
           ),
         ],
-        ),
+      ),
       body: Column(
         children: [
           Expanded(
@@ -59,9 +70,9 @@ class _StoryListScreenState extends State<StoryListScreen> {
                         final story = storyList[index];
 
                         return StoryCardWidget(
-                          story: story, 
+                          story: story,
                           onTap: () => widget.onTapped(story.id),
-                          );
+                        );
                       },
                     ),
                   StoryListErrorState(error: var message) => Center(

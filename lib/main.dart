@@ -7,6 +7,7 @@ import 'package:story_app/provider/detail/story_detail_provider.dart';
 import 'package:story_app/provider/form/form_provider.dart';
 import 'package:story_app/provider/form/upload_provider.dart';
 import 'package:story_app/provider/home/story_list_provider.dart';
+import 'package:story_app/routes/page_manager.dart';
 import 'package:story_app/routes/router_delegate.dart';
 
 void main() {
@@ -18,6 +19,7 @@ void main() {
       providers: [
         Provider(create: (context) => ApiAuth()),
         Provider(create: (context) => ApiStory()),
+         ChangeNotifierProvider(create: (context) => PageManager<String>()),
         ChangeNotifierProvider(
           create: (context) => FormProvider(),
         ),

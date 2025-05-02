@@ -7,9 +7,11 @@ import 'package:provider/provider.dart';
 
 import 'package:story_app/provider/form/form_provider.dart';
 import 'package:story_app/provider/form/upload_provider.dart';
+import 'package:story_app/routes/page_manager.dart';
 
 class FormScreen extends StatefulWidget {
-  const FormScreen({super.key});
+  final Function onSend;
+  const FormScreen({super.key, required this.onSend});
 
   @override
   State<FormScreen> createState() => _FormScreenState();
@@ -74,12 +76,14 @@ class _FormScreenState extends State<FormScreen> {
               const SizedBox(height: 8),
               context.watch<UploadProvider>().isUploading
                   ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                    onPressed:
-                        () => {
-                          if (formKey.currentState!.validate()) {_onUpload()},
-                        },
-                    child: const Text("Unggah"),
+                  : Center(
+                    child: ElevatedButton(
+                      onPressed:
+                          () => {
+                            if (formKey.currentState!.validate()) {_onUpload()},
+                          },
+                      child: const Text("Unggah"),
+                    ),
                   ),
             ],
           ),
@@ -89,9 +93,7 @@ class _FormScreenState extends State<FormScreen> {
   }
 
   _onUpload() async {
-    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(
-      context,
-    );
+    final scaffoldMessengerState = ScaffoldMessenger.of(context);
 
     final uploadProvider = context.read<UploadProvider>();
     final formProvider = context.read<FormProvider>();
@@ -109,11 +111,17 @@ class _FormScreenState extends State<FormScreen> {
     if (uploadProvider.uploadResponse != null) {
       formProvider.setImageFile(null);
       formProvider.setImagePath(null);
-    }
 
-    scaffoldMessengerState.showSnackBar(
-      SnackBar(content: Text(uploadProvider.message)),
-    );
+      widget.onSend();
+      context.read<PageManager<String>>().returnData(uploadProvider.message);
+    } else {
+      scaffoldMessengerState.showSnackBar(
+        SnackBar(
+          content: Text(uploadProvider.message),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   _onGalleryView() async {
@@ -153,8 +161,10 @@ class _FormScreenState extends State<FormScreen> {
 
   Widget _showImage() {
     final imagePath = context.read<FormProvider>().imagePath;
-    return kIsWeb
-        ? Image.network(imagePath.toString(), fit: BoxFit.contain)
-        : Image.file(File(imagePath.toString()), fit: BoxFit.contain);
+    return Center(
+      child: kIsWeb
+          ? Image.network(imagePath.toString(), fit: BoxFit.contain)
+          : Image.file(File(imagePath.toString()), fit: BoxFit.contain),
+    );
   }
 }

@@ -129,7 +129,12 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       if (isForm)
       MaterialPage(
         key: ValueKey("FormScreen"),
-        child: FormScreen(),
+        child: FormScreen(
+          onSend: () {
+            isForm = false;
+            notifyListeners();
+          },
+        ),
       ),
   ];
 
