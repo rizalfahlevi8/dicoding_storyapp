@@ -55,7 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Email
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -77,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -95,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Login Button
                 isLoading
                     ? const CircularProgressIndicator()
                     : SizedBox(
@@ -127,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                 const SizedBox(height: 16),
 
-                // Register Link
                 TextButton(
                   onPressed: () => widget.onRegister(),
                   child: Text(

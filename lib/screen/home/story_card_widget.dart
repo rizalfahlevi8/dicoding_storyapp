@@ -26,7 +26,7 @@ class StoryCardWidget extends StatelessWidget {
                 child: Hero(
                   tag: story.id,
                   child: Image.network(
-                    story.photoUrl ?? '',
+                    story.photoUrl,
                     height: 180,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>

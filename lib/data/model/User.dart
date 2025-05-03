@@ -10,7 +10,6 @@ class User {
   @override
   String toString() =>
       'User(userId: $userId, name: $name, email: $email)';
-  // agar saat print datanya kelihatan
 
   Map<String, dynamic> toMap() {
     return {

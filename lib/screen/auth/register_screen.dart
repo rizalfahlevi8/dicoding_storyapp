@@ -57,7 +57,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Name
                 TextFormField(
                   controller: nameController,
                   decoration: InputDecoration(
@@ -74,7 +73,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Email
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -96,7 +94,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -117,7 +114,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Register Button
                 isLoading
                     ? const CircularProgressIndicator()
                     : SizedBox(
@@ -150,7 +146,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                 const SizedBox(height: 16),
 
-                // Login Link
                 TextButton(
                   onPressed: () => widget.onLogin(),
                   child: Text(
