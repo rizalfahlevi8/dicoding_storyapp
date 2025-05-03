@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
 import 'package:story_app/provider/home/story_list_provider.dart';
 import 'package:story_app/routes/page_manager.dart';
+import 'package:story_app/screen/home/flag_icon_widget.dart';
 import 'package:story_app/screen/home/story_card_widget.dart';
 import 'package:story_app/static/story_list_result_state.dart';
 
@@ -36,8 +38,9 @@ class _StoryListScreenState extends State<StoryListScreen> {
     final authWatch = context.watch<AuthProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Story App"),
+        title: Text(AppLocalizations.of(context)!.homeTitle),
         actions: [
+          FlagIconWidget(),
           IconButton(
             onPressed: () async {
               final scaffoldMessengerState = ScaffoldMessenger.of(context);
@@ -101,7 +104,7 @@ class _StoryListScreenState extends State<StoryListScreen> {
                           },
                           icon: Icon(Icons.refresh),
                           label: Text(
-                            'Coba Lagi',
+                            AppLocalizations.of(context)!.retryButton,
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -128,7 +131,6 @@ class _StoryListScreenState extends State<StoryListScreen> {
           final result = await authRead.logout();
           if (result) widget.onLogout();
         },
-        tooltip: "Logout",
         child:
             authWatch.isLoadingLogout
                 ? const CircularProgressIndicator(color: Colors.white)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/detail/story_detail_provider.dart';
 import 'package:story_app/screen/detail/body_of_detail_screen.dart';
 import 'package:story_app/static/story_detail_result_state.dart';
@@ -25,7 +26,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Story Detail")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.detailTitle)),
       body: Consumer<StoryDetailProvider>(
         builder: (context, value, child) {
           return switch (value.resultState) {
@@ -58,7 +59,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           .fetchStoryDetail(widget.storyId);
                     },
                     icon: Icon(Icons.refresh),
-                    label: Text('Coba Lagi', style: TextStyle(fontWeight: FontWeight.w600),),
+                    label: Text(AppLocalizations.of(context)!.retryButton, style: TextStyle(fontWeight: FontWeight.w600),),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).primaryColor,
                       padding:

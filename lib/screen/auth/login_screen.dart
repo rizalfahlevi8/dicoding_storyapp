@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function() onLogin;
   final Function() onRegister;
-  
+
   const LoginScreen({
     super.key,
     required this.onLogin,
@@ -19,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -27,76 +29,111 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  final formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().isLoadingLogin;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Login Screen")),
       body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 300),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Icon(Icons.lock_outline, size: 80, color: Colors.blueAccent),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context)!.loginTitle,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.loginSubtitle,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 32),
+
+                // Email
                 TextFormField(
                   controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.emailField,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email.';
+                      return AppLocalizations.of(context)!.emailEmptyError;
                     }
                     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                     if (!emailRegex.hasMatch(value)) {
-                      return 'Please enter a valid email.';
+                      return AppLocalizations.of(context)!.emailInvalidError;
                     }
                     return null;
                   },
-                  decoration: const InputDecoration(hintText: "Email"),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
+
+                // Password
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(hintText: "Password"),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.passwordField,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password.';
+                      return AppLocalizations.of(context)!.passwordEmptyError;
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 8),
-                context.watch<AuthProvider>().isLoadingLogin
-                    ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          final scaffoldMessenger = ScaffoldMessenger.of(
-                            context,
-                          );
-                          final authRead = context.read<AuthProvider>();
-                          final result = await authRead.login(
-                            emailController.text,
-                            passwordController.text,
-                          );
-                          if (result == true) {
-                            widget.onLogin();
-                          } else if (result is String) {
-                            scaffoldMessenger.showSnackBar(
-                              SnackBar(content: Text(result.toString())),
-                            );
-                          }
-                        }
-                      },
-                      child: const Text("LOGIN"),
-                    ),
-                const SizedBox(height: 8),
-                OutlinedButton(
+                const SizedBox(height: 24),
+
+                // Login Button
+                isLoading
+                    ? const CircularProgressIndicator()
+                    : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              final result = await context.read<AuthProvider>().login(
+                                    emailController.text,
+                                    passwordController.text,
+                                  );
+                              if (result == true) {
+                                widget.onLogin();
+                              } else if (result is String) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result)),
+                                );
+                              }
+                            }
+                          },
+                          child: Text(AppLocalizations.of(context)!.loginButton, style: TextStyle(fontSize: 16)),
+                        ),
+                      ),
+                const SizedBox(height: 16),
+
+                // Register Link
+                TextButton(
                   onPressed: () => widget.onRegister(),
-                  child: const Text("REGISTER"),
+                  child: Text(
+                    AppLocalizations.of(context)!.toRegisterText,
+                    style: TextStyle(color: Colors.blueAccent),
+                  ),
                 ),
               ],
             ),

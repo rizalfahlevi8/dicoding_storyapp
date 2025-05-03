@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-
+import 'package:story_app/common.dart';
 import 'package:story_app/provider/form/form_provider.dart';
 import 'package:story_app/provider/form/upload_provider.dart';
 import 'package:story_app/routes/page_manager.dart';
@@ -25,7 +25,7 @@ class _FormScreenState extends State<FormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add New Story")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.formTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -48,11 +48,11 @@ class _FormScreenState extends State<FormScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: _onGalleryView,
-                      child: const Text("Gallery"),
+                      child: Text(AppLocalizations.of(context)!.galleryButton),
                     ),
                     ElevatedButton(
                       onPressed: _onCameraView,
-                      child: const Text("Camera"),
+                      child: Text(AppLocalizations.of(context)!.cameraButton),
                     ),
                   ],
                 ),
@@ -65,11 +65,11 @@ class _FormScreenState extends State<FormScreen> {
                     controller: descriptionController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your description.';
+                        return AppLocalizations.of(context)!.errorDescription;
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(hintText: "Description"),
+                    decoration: InputDecoration(hintText: AppLocalizations.of(context)!.descriptionHint),
                   ),
                 ),
               ),
@@ -82,7 +82,7 @@ class _FormScreenState extends State<FormScreen> {
                           () => {
                             if (formKey.currentState!.validate()) {_onUpload()},
                           },
-                      child: const Text("Unggah"),
+                      child: Text(AppLocalizations.of(context)!.uploadButton),
                     ),
                   ),
             ],

@@ -36,6 +36,7 @@ class ApiAuth {
       body: jsonEncode({"email": email, "password": password}),
     );
     
+    print("Response: ${response.body}");
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       await preferences.setString(tokenKey, data["loginResult"]["token"]);

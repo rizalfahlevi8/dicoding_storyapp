@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:story_app/common.dart';
+
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -12,7 +14,7 @@ class SplashScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Loading Splash...',
+              AppLocalizations.of(context)!.loadingSplash,
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
