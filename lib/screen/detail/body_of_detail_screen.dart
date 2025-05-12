@@ -60,7 +60,7 @@ class _BodyOfDetailScreenState extends State<BodyOfDetailScreen> {
             ),
           ),
           const SizedBox(height: 8),
-                  Text( // Tambahkan info latlong
+                  Text(
                     'Lat: ${widget.story.lat}, Lng: ${widget.story.lon}',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
