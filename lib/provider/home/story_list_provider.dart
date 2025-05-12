@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:story_app/data/api/api_story.dart';
+import 'package:story_app/data/model/story.dart';
 import 'package:story_app/static/story_list_result_state.dart';
 
 class StoryListProvider extends ChangeNotifier {
@@ -7,26 +8,43 @@ class StoryListProvider extends ChangeNotifier {
 
   StoryListProvider(this._apiStory);
 
+  int? pageItems = 1;
+  int sizeItems = 10;
+
+  List<Story> _allStories = [];
+  List<Story> get allStories => _allStories;
+
   StoryListResultState _resultState = StoryListNoneState();
   StoryListResultState get resultState => _resultState;
 
-    Future<void> fetchStoryList() async {
+  Future<void> fetchStoryList() async {
     try {
-      _resultState = StoryListLoadingState();
-      notifyListeners();
+      if (pageItems == 1) {
+        _resultState = StoryListLoadingState();
+        _allStories = [];
+        notifyListeners();
+      }
 
-      final result = await _apiStory.getStoryList();
+      final result = await _apiStory.getStoryList(pageItems!, sizeItems);
 
       if (result.error) {
         _resultState = StoryListErrorState(result.message);
         notifyListeners();
       } else {
-        _resultState = StoryListResultLoadedState(result.listStory);
+        _allStories.addAll(result.listStory);
+        _resultState = StoryListResultLoadedState(_allStories);
+
+        if (result.listStory.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
         notifyListeners();
       }
     } on Exception catch (_) {
       _resultState = StoryListErrorState(
-          'Tidak dapat terhubung ke internet. Periksa koneksi Anda dan coba lagi.');
+        'Tidak dapat terhubung ke internet. Periksa koneksi Anda dan coba lagi.',
+      );
       notifyListeners();
     }
   }

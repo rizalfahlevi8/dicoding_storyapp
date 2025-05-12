@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart';
 import 'package:story_app/common.dart';
 import 'package:story_app/data/api/api_auth.dart';
 import 'package:story_app/data/api/api_story.dart';
@@ -20,11 +21,11 @@ void main() {
     MultiProvider(
       providers: [
         Provider(create: (context) => ApiAuth()),
-        Provider(create: (context) => ApiStory()),
+        Provider(create: (context) => ApiStory(Client())),
         ChangeNotifierProvider(create: (context) => PageManager<String>()),
         ChangeNotifierProvider(create: (context) => LocalizationProvider()),
         ChangeNotifierProvider(create: (context) => FormProvider()),
-        ChangeNotifierProvider(create: (context) => UploadProvider(ApiStory())),
+        ChangeNotifierProvider(create: (context) => UploadProvider(ApiStory(Client()))),
         ChangeNotifierProvider(
           create: (context) => StoryListProvider(context.read<ApiStory>()),
         ),

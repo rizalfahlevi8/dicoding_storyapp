@@ -25,12 +25,29 @@ class StoryListScreen extends StatefulWidget {
 }
 
 class _StoryListScreenState extends State<StoryListScreen> {
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      context.read<StoryListProvider>().fetchStoryList();
+    final apiProvider = context.read<StoryListProvider>();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (apiProvider.pageItems != null) {
+          apiProvider.fetchStoryList();
+        }
+      }
     });
+
+    Future.microtask(() async => apiProvider.fetchStoryList());
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,7 +65,10 @@ class _StoryListScreenState extends State<StoryListScreen> {
               final dataString =
                   await context.read<PageManager<String>>().waitForResult();
               scaffoldMessengerState.showSnackBar(
-                SnackBar(content: Text("$dataString"), backgroundColor: Colors.green,),
+                SnackBar(
+                  content: Text("$dataString"),
+                  backgroundColor: Colors.green,
+                ),
               );
 
               context.read<StoryListProvider>().fetchStoryList();
@@ -68,8 +88,19 @@ class _StoryListScreenState extends State<StoryListScreen> {
                   ),
                   StoryListResultLoadedState(data: var storyList) =>
                     ListView.builder(
-                      itemCount: storyList.length,
+                      controller: scrollController,
+                      itemCount:
+                          storyList.length + (value.pageItems != null ? 1 : 0),
                       itemBuilder: (context, index) {
+                        if (index == storyList.length &&
+                            value.pageItems != null) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
                         final story = storyList[index];
 
                         return StoryCardWidget(

@@ -8,17 +8,22 @@ import 'package:story_app/data/model/story_list_response.dart';
 import 'package:story_app/data/model/upload_response.dart';
 
 class ApiStory {
+  final http.Client client;
+
+  ApiStory(this.client);
+
   static const String _baseUrl = "https://story-api.dicoding.dev/v1";
 
-  Future<StoryListResponse> getStoryList() async {
+  Future<StoryListResponse> getStoryList([int page = 1, int size = 10]) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
 
     final response = await http.get(
-      Uri.parse("$_baseUrl/stories"),
+      Uri.parse("$_baseUrl/stories?page=$page&size=$size"),
       headers: {'Authorization': 'Bearer $token'},
     );
 
+    print(response.body);
     if (response.statusCode == 200) {
       return StoryListResponse.fromJson(jsonDecode(response.body));
     } else {
