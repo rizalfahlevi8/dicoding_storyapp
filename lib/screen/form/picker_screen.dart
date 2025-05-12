@@ -204,7 +204,7 @@ class PlacemarkWidget extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                   const SizedBox(height: 8),
-                  Text( // Tambahkan info latlong
+                  Text( 
                     'Lat: ${latLng.latitude}, Lng: ${latLng.longitude}',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
