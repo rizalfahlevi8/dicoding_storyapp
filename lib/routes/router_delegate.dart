@@ -5,6 +5,7 @@ import 'package:story_app/screen/auth/login_screen.dart';
 import 'package:story_app/screen/auth/register_screen.dart';
 import 'package:story_app/screen/detail/detail_screen.dart';
 import 'package:story_app/screen/form/form_screen.dart';
+import 'package:story_app/screen/form/picker_screen.dart';
 import 'package:story_app/screen/splash_screen.dart';
 import 'package:story_app/screen/home/story_list_screen.dart';
 
@@ -33,6 +34,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
 
   String? selectedStory;
   bool isForm = false;
+  bool isMapsForm = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,12 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
         }
         if (page.key == const ValueKey("FormScreen")) {
           isForm = false;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            notifyListeners();
+          });
+        }
+        if (page.key == const ValueKey("MapsFormScreen")) {
+          isMapsForm = false;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             notifyListeners();
           });
@@ -132,6 +140,20 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
         child: FormScreen(
           onSend: () {
             isForm = false;
+            notifyListeners();
+          },
+          toMapsForm: (){
+            isMapsForm = true;
+            notifyListeners();
+          },
+        ),
+      ),
+      if (isMapsForm)
+      MaterialPage(
+        key: ValueKey("MapsFormScreen"),
+        child: PickerScreen(
+          onSend: () {
+            isMapsForm = false;
             notifyListeners();
           },
         ),

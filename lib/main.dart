@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart';
 import 'package:story_app/common.dart';
@@ -23,6 +24,7 @@ void main() {
         Provider(create: (context) => ApiAuth()),
         Provider(create: (context) => ApiStory(Client())),
         ChangeNotifierProvider(create: (context) => PageManager<String>()),
+        ChangeNotifierProvider(create: (context) => PageManager<LatLng>()),
         ChangeNotifierProvider(create: (context) => LocalizationProvider()),
         ChangeNotifierProvider(create: (context) => FormProvider()),
         ChangeNotifierProvider(create: (context) => UploadProvider(ApiStory(Client()))),

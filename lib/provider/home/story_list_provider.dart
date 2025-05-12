@@ -17,11 +17,15 @@ class StoryListProvider extends ChangeNotifier {
   StoryListResultState _resultState = StoryListNoneState();
   StoryListResultState get resultState => _resultState;
 
-  Future<void> fetchStoryList() async {
+  Future<void> fetchStoryList({bool reset = false}) async {
     try {
+      if (reset) {
+        pageItems = 1;
+        _allStories = [];
+      }
+
       if (pageItems == 1) {
         _resultState = StoryListLoadingState();
-        _allStories = [];
         notifyListeners();
       }
 

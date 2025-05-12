@@ -43,6 +43,16 @@ class _BodyOfDetailScreenState extends State<BodyOfDetailScreen> {
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.left,
           ),
+          Text(
+            widget.story.lat.toString(),
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.left,
+          ),
+          Text(
+            widget.story.lon.toString(),
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.left,
+          ),
         ],
       ),
     );

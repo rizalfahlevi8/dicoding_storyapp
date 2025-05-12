@@ -49,7 +49,7 @@ class _StoryListScreenState extends State<StoryListScreen> {
     scrollController.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final authWatch = context.watch<AuthProvider>();
@@ -64,6 +64,7 @@ class _StoryListScreenState extends State<StoryListScreen> {
               widget.toFormScreen();
               final dataString =
                   await context.read<PageManager<String>>().waitForResult();
+              context.read<StoryListProvider>().fetchStoryList(reset: true);
               scaffoldMessengerState.showSnackBar(
                 SnackBar(
                   content: Text("$dataString"),

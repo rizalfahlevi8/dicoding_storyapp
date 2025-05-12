@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:story_app/common.dart';
@@ -11,7 +12,8 @@ import 'package:story_app/routes/page_manager.dart';
 
 class FormScreen extends StatefulWidget {
   final Function onSend;
-  const FormScreen({super.key, required this.onSend});
+  final Function toMapsForm;
+  const FormScreen({super.key, required this.onSend, required this.toMapsForm});
 
   @override
   State<FormScreen> createState() => _FormScreenState();
@@ -19,6 +21,8 @@ class FormScreen extends StatefulWidget {
 
 class _FormScreenState extends State<FormScreen> {
   final descriptionController = TextEditingController();
+  final latitudeController = TextEditingController();
+  final longitudeController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -32,7 +36,7 @@ class _FormScreenState extends State<FormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 200, 
+                height: 200,
                 child:
                     context.watch<FormProvider>().imagePath == null
                         ? const Align(
@@ -61,15 +65,68 @@ class _FormScreenState extends State<FormScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
                   key: formKey,
-                  child: TextFormField(
-                    controller: descriptionController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.errorDescription;
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(hintText: AppLocalizations.of(context)!.descriptionHint),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: descriptionController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.errorDescription;
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          hintText:
+                              AppLocalizations.of(context)!.descriptionHint,
+                          labelText: "Deskripsi",
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        "Lokasi",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            widget.toMapsForm();
+                            final LatLng coords =
+                                await context
+                                    .read<PageManager<LatLng>>()
+                                    .waitForResult();
+                            latitudeController.text =
+                                coords.latitude.toString();
+                            longitudeController.text =
+                                coords.longitude.toString();
+                          },
+                          icon: const Icon(Icons.map),
+                          label: const Text("Dapatkan Lokasi"),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: latitudeController,
+                        readOnly: true,
+                        decoration: const InputDecoration(
+                          labelText: "Latitude",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: longitudeController,
+                        readOnly: true,
+                        decoration: const InputDecoration(
+                          labelText: "Longitude",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -106,7 +163,8 @@ class _FormScreenState extends State<FormScreen> {
 
     final newBytes = await uploadProvider.compressImage(bytes);
 
-    await uploadProvider.upload(newBytes, fileName, descriptionController.text);
+    await uploadProvider.upload(newBytes, fileName, descriptionController.text, double.parse(latitudeController.text),
+        double.parse(longitudeController.text));
 
     if (uploadProvider.uploadResponse != null) {
       formProvider.setImageFile(null);
@@ -162,9 +220,10 @@ class _FormScreenState extends State<FormScreen> {
   Widget _showImage() {
     final imagePath = context.read<FormProvider>().imagePath;
     return Center(
-      child: kIsWeb
-          ? Image.network(imagePath.toString(), fit: BoxFit.contain)
-          : Image.file(File(imagePath.toString()), fit: BoxFit.contain),
+      child:
+          kIsWeb
+              ? Image.network(imagePath.toString(), fit: BoxFit.contain)
+              : Image.file(File(imagePath.toString()), fit: BoxFit.contain),
     );
   }
 }
