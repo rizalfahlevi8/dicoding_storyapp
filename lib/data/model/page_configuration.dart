@@ -1,16 +1,13 @@
-sealed class PageConfiguration {}
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-final class SplashPageConfiguration extends PageConfiguration {}
+part 'page_configuration.freezed.dart';
 
-final class LoginPageConfiguration extends PageConfiguration {}
-
-final class RegisterPageConfiguration extends PageConfiguration {}
-
-final class HomePageConfiguration extends PageConfiguration {}
-
-final class DetailStoryPageConfiguration extends PageConfiguration {
-  final String? storyId;
-  DetailStoryPageConfiguration(this.storyId);
+@freezed
+sealed class PageConfiguration with _$PageConfiguration {
+  const factory PageConfiguration.splash() = SplashPageConfiguration;
+  const factory PageConfiguration.login() = LoginPageConfiguration;
+  const factory PageConfiguration.register() = RegisterPageConfiguration;
+  const factory PageConfiguration.home() = HomePageConfiguration;
+  const factory PageConfiguration.detailStory({String? storyId}) = DetailStoryPageConfiguration;
+  const factory PageConfiguration.unknown() = UnknownPageConfiguration;
 }
-
-final class UnknownPageConfiguration extends PageConfiguration {}

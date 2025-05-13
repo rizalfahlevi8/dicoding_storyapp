@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/common.dart';
+import 'package:story_app/static/common.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
 import 'package:story_app/provider/home/story_list_provider.dart';
 import 'package:story_app/routes/page_manager.dart';
-import 'package:story_app/screen/home/flag_icon_widget.dart';
-import 'package:story_app/screen/home/story_card_widget.dart';
+import 'package:story_app/screen/components/flag_icon_widget.dart';
+import 'package:story_app/screen/components/loader_widget.dart';
+import 'package:story_app/screen/components/story_card_widget.dart';
 import 'package:story_app/static/story_list_result_state.dart';
 
 class StoryListScreen extends StatefulWidget {
@@ -85,7 +86,7 @@ class _StoryListScreenState extends State<StoryListScreen> {
               builder: (context, value, child) {
                 return switch (value.resultState) {
                   StoryListLoadingState() => Center(
-                    child: CircularProgressIndicator(),
+                    child: LoaderWidget(),
                   ),
                   StoryListResultLoadedState(data: var storyList) =>
                     ListView.builder(

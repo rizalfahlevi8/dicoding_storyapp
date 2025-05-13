@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:story_app/static/common.dart';
 import 'package:story_app/data/model/story.dart';
-import 'package:story_app/screen/detail/maps_widget.dart';
+import 'package:story_app/screen/components/maps_widget.dart';
 
 class BodyOfDetailScreen extends StatefulWidget {
   final Story story;
@@ -22,12 +23,12 @@ class _BodyOfDetailScreenState extends State<BodyOfDetailScreen> {
             child: Hero(
               tag: widget.story.id,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(24), // Sudut lebih membulat
+                borderRadius: BorderRadius.circular(24), 
                 child: Image.network(
                   widget.story.photoUrl,
                   fit: BoxFit.cover,
-                  height: 250, // Menentukan ukuran gambar agar konsisten
-                  width: double.infinity, // Membuat gambar mengambil lebar penuh
+                  height: 250, 
+                  width: double.infinity, 
                 ),
               ),
             ),
@@ -51,8 +52,8 @@ class _BodyOfDetailScreenState extends State<BodyOfDetailScreen> {
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 16),
-          const Text(
-            "Lokasi",
+          Text(
+            AppLocalizations.of(context)!.locationTitle,
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -68,7 +69,7 @@ class _BodyOfDetailScreenState extends State<BodyOfDetailScreen> {
           if (widget.story.lat != null && widget.story.lon != null)
             MapsWidget(lat: widget.story.lat!, lon: widget.story.lon!)
           else
-            const Center(child: Text("Lokasi tidak ditemukan", style: TextStyle(fontStyle: FontStyle.italic))),
+            Center(child: Text(AppLocalizations.of(context)!.locationNotFound, style: TextStyle(fontStyle: FontStyle.italic))),
         ],
       ),
     );

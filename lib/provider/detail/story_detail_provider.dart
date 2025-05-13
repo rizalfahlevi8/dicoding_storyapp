@@ -7,25 +7,25 @@ class StoryDetailProvider extends ChangeNotifier {
 
   StoryDetailProvider(this._apiStory);
 
-  StoryDetailResultState _resultState = StoryDetailNoneState();
+  StoryDetailResultState _resultState = const StoryDetailResultState.none();
   StoryDetailResultState get resultState => _resultState;
 
   Future<void> fetchStoryDetail(String id) async {
     try {
-      _resultState = StoryDetailLoadingState();
+      _resultState = StoryDetailResultState.loading();
       notifyListeners();
 
       final result = await _apiStory.getStoryDetail(id);
 
       if (result.error) {
-        _resultState = StoryDetailErrorState(result.message);
+        _resultState = StoryDetailResultState.error(result.message);
       } else {
-        _resultState = StoryDetailLoadedState(result.story);
+        _resultState = StoryDetailResultState.loaded(result.story);
       }
 
       notifyListeners();
     } on Exception catch (_) {
-      _resultState = StoryDetailErrorState(
+      _resultState = StoryDetailResultState.error(
         'Tidak dapat terhubung ke internet. Periksa koneksi Anda dan coba lagi.',
       );
       notifyListeners();

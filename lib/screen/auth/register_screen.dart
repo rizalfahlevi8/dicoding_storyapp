@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/common.dart';
+import 'package:story_app/static/common.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
 
 class RegisterScreen extends StatefulWidget {

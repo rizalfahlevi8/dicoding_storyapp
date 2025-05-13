@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/common.dart';
+import 'package:story_app/static/common.dart';
 import 'package:story_app/provider/form/form_provider.dart';
 import 'package:story_app/provider/form/upload_provider.dart';
 import 'package:story_app/routes/page_manager.dart';
+import 'package:story_app/static/flavor_config.dart';
 
 class FormScreen extends StatefulWidget {
   final Function onSend;
@@ -81,51 +82,64 @@ class _FormScreenState extends State<FormScreen> {
                         decoration: InputDecoration(
                           hintText:
                               AppLocalizations.of(context)!.descriptionHint,
-                          labelText: "Deskripsi",
+                          labelText:
+                              AppLocalizations.of(context)!.descriptionHint,
                           border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        "Lokasi",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Center(
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            widget.toMapsForm();
-                            final LatLng coords =
-                                await context
-                                    .read<PageManager<LatLng>>()
-                                    .waitForResult();
-                            latitudeController.text =
-                                coords.latitude.toString();
-                            longitudeController.text =
-                                coords.longitude.toString();
-                          },
-                          icon: const Icon(Icons.map),
-                          label: const Text("Dapatkan Lokasi"),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: latitudeController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          labelText: "Latitude",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: longitudeController,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          labelText: "Longitude",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
+                      FlavorConfig.instance.flavor == FlavorType.paid
+                          ? Column(
+                            children: [
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.locationSectionTitle,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(height: 8),
+                              Center(
+                                child: ElevatedButton.icon(
+                                  onPressed: () async {
+                                    widget.toMapsForm();
+                                    final LatLng coords =
+                                        await context
+                                            .read<PageManager<LatLng>>()
+                                            .waitForResult();
+                                    latitudeController.text =
+                                        coords.latitude.toString();
+                                    longitudeController.text =
+                                        coords.longitude.toString();
+                                  },
+                                  icon: const Icon(Icons.map),
+                                  label: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.getLocationButton,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              TextFormField(
+                                controller: latitudeController,
+                                readOnly: true,
+                                decoration: const InputDecoration(
+                                  labelText: "Latitude",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: longitudeController,
+                                readOnly: true,
+                                decoration: const InputDecoration(
+                                  labelText: "Longitude",
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ],
+                          )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
@@ -163,8 +177,23 @@ class _FormScreenState extends State<FormScreen> {
 
     final newBytes = await uploadProvider.compressImage(bytes);
 
-    await uploadProvider.upload(newBytes, fileName, descriptionController.text, double.parse(latitudeController.text),
-        double.parse(longitudeController.text));
+    double? latitude;
+    double? longitude;
+
+    if (FlavorConfig.instance.flavor == FlavorType.paid &&
+        latitudeController.text.isNotEmpty &&
+        longitudeController.text.isNotEmpty) {
+      latitude = double.tryParse(latitudeController.text);
+      longitude = double.tryParse(longitudeController.text);
+    }
+
+    await uploadProvider.upload(
+      newBytes,
+      fileName,
+      descriptionController.text,
+      latitude,
+      longitude,
+    );
 
     if (uploadProvider.uploadResponse != null) {
       formProvider.setImageFile(null);

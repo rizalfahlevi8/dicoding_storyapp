@@ -1,30 +1,15 @@
-import 'dart:convert';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class User {
-  String? userId;
-  String? name;
-  String? email;
+part 'User.freezed.dart';
+part 'User.g.dart';
 
-  User({this.userId, this.name, this.email});
+@freezed
+abstract class User with _$User {
+  const factory User({
+    String? userId,
+    String? name,
+    String? email,
+  }) = _User;
 
-  @override
-  String toString() =>
-      'User(userId: $userId, name: $name, email: $email)';
-
-  Map<String, dynamic> toMap() {
-    return {
-      'userId': userId,
-      'name': name,
-      'email': email
-    };
-  }
-
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(userId: map['userId'], name: map['name'], email: map['email']);
-  }
-
-  String toJson() => json.encode(toMap());
-  
-  factory User.fromJson(String source) => User.fromMap(json.decode(source));
-
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }

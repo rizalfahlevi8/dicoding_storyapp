@@ -40,7 +40,7 @@ class _MapsScreenState extends State<MapsWidget> {
         child: Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(24), // Sudut melengkung
+              borderRadius: BorderRadius.circular(24), 
               child: GoogleMap(
                 markers: markers,
                 mapType: selectedMapType,

@@ -14,7 +14,7 @@ class StoryListProvider extends ChangeNotifier {
   List<Story> _allStories = [];
   List<Story> get allStories => _allStories;
 
-  StoryListResultState _resultState = StoryListNoneState();
+  StoryListResultState _resultState = StoryListResultState.none();
   StoryListResultState get resultState => _resultState;
 
   Future<void> fetchStoryList({bool reset = false}) async {
@@ -25,18 +25,18 @@ class StoryListProvider extends ChangeNotifier {
       }
 
       if (pageItems == 1) {
-        _resultState = StoryListLoadingState();
+        _resultState = StoryListResultState.loading();
         notifyListeners();
       }
 
       final result = await _apiStory.getStoryList(pageItems!, sizeItems);
 
       if (result.error) {
-        _resultState = StoryListErrorState(result.message);
+        _resultState = StoryListResultState.error(result.message);
         notifyListeners();
       } else {
         _allStories.addAll(result.listStory);
-        _resultState = StoryListResultLoadedState(_allStories);
+        _resultState = StoryListResultState.loaded(_allStories);
 
         if (result.listStory.length < sizeItems) {
           pageItems = null;
@@ -46,7 +46,7 @@ class StoryListProvider extends ChangeNotifier {
         notifyListeners();
       }
     } on Exception catch (_) {
-      _resultState = StoryListErrorState(
+      _resultState = StoryListResultState.error(
         'Tidak dapat terhubung ke internet. Periksa koneksi Anda dan coba lagi.',
       );
       notifyListeners();

@@ -1,19 +1,12 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:story_app/data/model/story.dart';
 
-sealed class StoryListResultState {}
+part 'story_list_result_state.freezed.dart';
 
-class StoryListNoneState extends StoryListResultState {}
-
-class StoryListLoadingState extends StoryListResultState {}
-
-class StoryListErrorState extends StoryListResultState {
-  final String error;
-
-  StoryListErrorState(this.error);
-}
-
-class StoryListResultLoadedState extends StoryListResultState {
-  final List<Story> data;
-
-  StoryListResultLoadedState(this.data);
+@freezed
+sealed class StoryListResultState with _$StoryListResultState {
+  const factory StoryListResultState.none() = StoryListNoneState;
+  const factory StoryListResultState.loading() = StoryListLoadingState;
+  const factory StoryListResultState.error(String error) = StoryListErrorState;
+  const factory StoryListResultState.loaded(List<Story> data) = StoryListResultLoadedState;
 }

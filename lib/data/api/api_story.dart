@@ -23,7 +23,6 @@ class ApiStory {
       headers: {'Authorization': 'Bearer $token'},
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
       return StoryListResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -51,8 +50,8 @@ class ApiStory {
     List<int> bytes,
     String fileName,
     String description,
-    double latitude,
-    double longitude,
+    double? latitude,
+    double? longitude,
   ) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
@@ -66,8 +65,8 @@ class ApiStory {
     );
     final Map<String, String> fields = {
       "description": description,
-      "lat": latitude.toString(),
-      "lon": longitude.toString(),
+      if (latitude != null) "lat": latitude.toString(),
+      if (longitude != null) "lon": longitude.toString(),
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",

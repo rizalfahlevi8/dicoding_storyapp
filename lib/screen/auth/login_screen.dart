@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_app/common.dart';
+import 'package:story_app/static/common.dart';
 import 'package:story_app/provider/auth/auth_provider.dart';
+import 'package:story_app/static/flavor_config.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function() onLogin;
@@ -34,6 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final isLoading = context.watch<AuthProvider>().isLoadingLogin;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(FlavorConfig.instance.values.titleApp, style: Theme.of(context).textTheme.labelSmall,),
+        centerTitle: true,
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
